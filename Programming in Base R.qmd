@@ -1,0 +1,83 @@
+---
+title: "Programming in Base R"
+format: html
+editor: visual
+---
+
+## Step 3 Task 1: Basic Vector Practice
+
+Create vectors for pre-treatment and post-treatment blood pressure for a treatment group. Then, perform the following operations on the Vectors for the treatment group:
+
+1.  Compute the difference in blood pressure.
+2.  Compute and print average difference in blood pressure.
+3.  Filter for subjects where blood pressure decreased.
+4.  Compute and print average decrease in blood pressure.
+
+```{r}
+
+pre_bp <- setNames(c(120,151,125,126,115,132,132,129,134,139,127,122,127,135,133,128,147,138,140,132),paste("Subject", 1:20, sep = "_"))
+
+post_bp <- setNames(c(127,145,135,122,115,122,123,126,126,129,132,146,120,114,121,120,128,120,133,115),paste("Subject", 1:20, sep = "_"))
+
+diff_bp <- pre_bp - post_bp
+
+avg_diff_bp <- mean(diff_bp)
+avg_diff_bp
+
+which(diff_bp > 0, arr.ind = TRUE, useNames = TRUE)
+
+decrease <- diff_bp[diff_bp > 0]
+
+avg_decrease <- mean(decrease)
+avg_decrease
+
+```
+
+## Step 3 Task 2: Basic Data Frame Practice
+
+Create a data frame (treatment) for the treatment experiment and results.<br>
+Add a column for subjects where diff in blood pressure < 120.<br>
+Print the treatment data frame as a table using kable function.
+
+```{r}
+
+treatment <- data.frame(patient = names(pre_bp),pre_bp, post_bp, diff_bp, row.names = NULL)
+`[`(which(treatment$diff_bp < 0))
+
+post_bp_120 <- `[`(treatment[,3] < 120)
+treatment$post_bp_120 <- `[`(treatment[,3] < 120)
+
+knitr::kable(treatment, align = 'c')
+
+```
+
+## Step 3 Task 3: List Practice
+
+Create a data frame for the placebo experiment and results. <br>
+Add a column for subjects where diff in blood pressure < 120. <br>
+Create a list comprised of the treatment and placebo data frames. <br>
+Show that the first element of the list (treatment) can be obtained in three different ways. <br>
+Extract the list of initial blood pressures for the placebo group.
+
+
+```{r}
+
+pre_bp <- setNames(c(138,135,147,117,152,134,114,121,131,130),paste("Subject", 1:10, sep = "_"))
+
+post_bp <- setNames(c(105,136,123,130,134,143,135,139,120,124),paste("Subject", 1:10, sep = "_"))
+
+diff_bp <- pre_bp - post_bp
+
+placebo <- data.frame(patient = names(pre_bp),pre_bp, post_bp, diff_bp, row.names = NULL)
+
+placebo$post_bp_120 <- `[`(placebo[,3] < 120)
+placebo
+
+bp_list <- list(treatment = treatment, placebo = placebo)
+bp_list[1]
+bp_list[[1]]
+bp_list$treatment
+
+bp_list$placebo$pre_bp
+
+```
